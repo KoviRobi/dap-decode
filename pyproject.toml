@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyproject-toml"
+dynamic = ["version"]
+description = "Simple decoder for CMSIS-DAP USB packets"
+readme = "README.md"
+authors = [{ name = "Kovacsics Robert", email = "kovirobi@gmail.com" }]
+license = { text = "MIT" }
+dependencies = [ ]
+requires-python = ">= 3.8"
+
+[project.urls]
+homepage = "https://github.com/KoviRobi/dap-decode"
+
+[project.scripts]
+dap-decode = "parse_usbmon:main"
