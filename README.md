@@ -17,7 +17,7 @@ $ sudo cat /sys/kernel/debug/usb/usbmon/2u | python src/parse_usbmon.py 16
 $ sudo cat /sys/kernel/debug/usb/usbmon/2u | dap-decode 16
 # You can save and load traces, though really the Unix `tee` command would
 # already do this.
-python src/parse_usbmon.py --load example-traces/probe-rs-info.cap
+$ python src/parse_usbmon.py --load example-traces/probe-rs-info.cap
 Info(Maximum packet size) -> Info(64)
 Info(Maximum packet count) -> Info(8)
 Info(Capabilities) -> Info(SWD|Atomic|USB_COM)
