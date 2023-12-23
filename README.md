@@ -13,8 +13,10 @@ Bus 002 Device 016: ID 04b4:f138 Cypress Semiconductor Corp. CMSIS-DAP
 # Open the stream and forward it to this script (this way you don't need to run
 # this script/python as root). Also the `16` is optional.
 $ sudo cat /sys/kernel/debug/usb/usbmon/2u | python src/parse_usbmon.py 16
+
 # Or if you have `pip install`ed it for some reason
 $ sudo cat /sys/kernel/debug/usb/usbmon/2u | dap-decode 16
+
 # You can save and load traces, though really the Unix `tee` command would
 # already do this.
 $ python src/parse_usbmon.py --load example-traces/probe-rs-info.cap
@@ -33,7 +35,15 @@ SWJ_Sequence(33:ff:ff:ff:ff:ff:ff:07) -> SWJ_Sequence(Ok)
 SWJ_Sequence(10:9e:e7) -> SWJ_Sequence(Ok)
 SWJ_Sequence(33:ff:ff:ff:ff:ff:ff:07) -> SWJ_Sequence(Ok)
 SWJ_Sequence(03:00) -> SWJ_Sequence(Ok)
+Transfer(DAP Index 0, DP read @ 0x0) -> Transfer(Ok, 0xBC12477)
+Transfer(DAP Index 0, DP write @ 0x0 = 0x1E, DP write @ 0x8 = 0x0, DP read @ 0x4) -> Transfer(Ok, 0xF0000040)
+Transfer(DAP Index 0, DP read @ 0x4) -> Transfer(Ok, 0xF0000040)
 ```
+
+As you can see, it doesn't decode the SWJ/SWD sequences (the above SWJ sequence
+is switching to SWD from JTAG), it does decode the transfers but doesn't decode
+which registers it writes to (this needs state tracking). All of these could of
+course be done, I just haven't written the code for it.
 
 [CMSIS-DAP]: https://arm-software.github.io/CMSIS_5/latest/DAP/html/index.html
 [rp2040-selfdebug]: https://github.com/KoviRobi/rp2040-selfdebug
