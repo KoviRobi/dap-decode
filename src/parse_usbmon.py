@@ -164,24 +164,25 @@ class UsbEvent:
         Out = "o"
 
     @classmethod
-    def from_usbmon(cls, usbmon_line: str) -> UsbEvent:
+    def from_usbmon(cls, usbmon_line: str) -> t.Optional[UsbEvent]:
         match = cls._USBMON_RE.match(usbmon_line)
         if match is None:
             raise UsbMonError("Bad usbmon line", usbmon_line)
         event = match.groupdict()
-        return UsbEvent(
-            urb_tag=event["urb_tag"],
-            timestamp=int(event["timestamp"]),
-            event_type=event["event_type"],
-            type=UsbEvent.Type(event["urb_type"]),
-            direction=UsbEvent.Direction(event["urb_direction"]),
-            bus=int(event["bus_number"]),
-            device=int(event["device_address"]),
-            endpoint=int(event["endpoint_number"]),
-            status=event["urb_status"],
-            length=int(event["data_length"]),
-            data=bytes.fromhex(event["data"]) if event["data_tag"] == "=" else None,
-        )
+        if event["urb_status"] != "s":
+            return UsbEvent(
+                urb_tag=event["urb_tag"],
+                timestamp=int(event["timestamp"]),
+                event_type=event["event_type"],
+                type=UsbEvent.Type(event["urb_type"]),
+                direction=UsbEvent.Direction(event["urb_direction"]),
+                bus=int(event["bus_number"]),
+                device=int(event["device_address"]),
+                endpoint=int(event["endpoint_number"]),
+                status=event["urb_status"],
+                length=int(event["data_length"]),
+                data=bytes.fromhex(event["data"]) if event["data_tag"] == "=" else None,
+            )
 
     def __str__(self) -> str:
         ret = ""
@@ -209,7 +210,8 @@ def usb_event_stream(capture: t.Optional[Path]) -> t.Iterator[UsbEvent]:
                 event = UsbEvent.from_usbmon(line)
                 if fp is not None:
                     print(repr(event), file=fp)
-                yield event
+                if event is not None:
+                    yield event
             except UsbMonError as e:
                 print("UsbMonError", e)
 
