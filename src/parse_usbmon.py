@@ -225,7 +225,7 @@ def load_file(file: Path) -> t.Iterator[UsbEvent]:
 
 def main() -> None:
     parser = ArgumentParser()
-    parser.add_argument("device", nargs="?")
+    parser.add_argument("device", nargs="?", type=int)
     parser.add_argument("--save", type=Path)
     parser.add_argument("--load", type=Path)
     args = parser.parse_args()
